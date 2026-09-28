@@ -20,7 +20,7 @@ jobs:
         run: |
           bash -c "mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview"
       - name: Save cache
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: |
             ~/v
@@ -42,7 +42,7 @@ jobs:
       VFLAGS: -cg -cc ${{ matrix.cc }}
     steps:
       - name: Restore cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             ~/v
