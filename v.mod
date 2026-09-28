@@ -1,6 +1,6 @@
 Module{
 	name: 'webview'
-	description: 'V wrapper for webview - a tiny library to build modern cross-platform GUI applications.'
+	description: 'Community-maintained V binding for the cross-platform webview library, continuing the ttytm/webview project.'
 	version: '0.7.0'
 	license: 'MIT'
 	dependencies: []

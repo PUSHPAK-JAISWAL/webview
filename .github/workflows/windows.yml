@@ -18,8 +18,7 @@ jobs:
           mv v ~/v && ~/v/v symlink
       - name: Setup V module
         run: |
-          bash -c "mkdir -p ~/.vmodules/ttytm && mv webview ~/.vmodules/ttytm/webview"
-          v run $HOME/.vmodules/ttytm/webview/build.vsh --silent
+          bash -c "mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview"
       - name: Save cache
         uses: actions/cache/save@v4
         with:
@@ -54,9 +53,13 @@ jobs:
         run: ~/v/v symlink
       - name: Compile V
         run: v -showcc self && v doctor
+      - name: L1 unit tests
+        run: v -cc gcc -c++ g++ -stats test $HOME/.vmodules/pushpak_jaiswal/webview/tests/l1/
+      - name: L2 integration tests
+        run: v -cc gcc -c++ g++ -stats test -run-only test_static_server_serves_index_over_http $HOME/.vmodules/pushpak_jaiswal/webview/tests/l2/
       - name: Build examples
         run: |
-          $exampleDirs = Get-ChildItem -Path "$HOME/.vmodules/ttytm/webview/examples" -Depth 0 -Directory
+          $exampleDirs = Get-ChildItem -Path "$HOME/.vmodules/pushpak_jaiswal/webview/examples" -Depth 0 -Directory
           foreach ($dir in $exampleDirs) {
               $cmd = "v $dir"
               if ($dir.FullName -match "emoji-picker") {

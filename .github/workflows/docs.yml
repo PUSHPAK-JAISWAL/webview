@@ -25,14 +25,14 @@ jobs:
       - name: Setup pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
-        if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'ttytm/webview'
+        if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_docs'
 
   deploy:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' && github.ref_name == 'main' && github.repository == 'ttytm/webview'
+    if: github.event_name != 'pull_request' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
     needs: build
     permissions:
       contents: read

@@ -3,5 +3,5 @@ Module {
 	description: 'Astro + V + webview'
 	version: '0.1.0'
 	license: 'MIT'
-	dependencies: ['ttytm.webview']
+	dependencies: ['pushpak_jaiswal.webview']
 }

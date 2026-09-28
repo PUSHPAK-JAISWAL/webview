@@ -1,23 +1,33 @@
 # webview - V Binding
 
-[![build-status](https://img.shields.io/github/actions/workflow/status/ttytm/webview/ci.yml?branch=main&style=flat-rounded)](https://github.com/ttytm/webview/actions/workflows/ci.yml?query=branch%3Amain)
-[![last-commit](https://img.shields.io/github/last-commit/ttytm/webview?style=flat-rounded)](https://github.com/ttytm/webview)
+# Webview for V
 
-This repository provides a V binding for [webview](https://github.com/webview/webview) - a tiny cross-platform library
-to build modern cross-platform GUI applications. It allows to combine V as a fast, compiled general
-purpose programming language with modern web technologies to design a graphical user interface.
+[![build-status](https://img.shields.io/github/actions/workflow/status/PUSHPAK-JAISWAL/webview/ci.yml?branch=main)](https://github.com/PUSHPAK-JAISWAL/webview/actions/workflows/ci.yml?query=branch%3Amain)
+[![last-commit](https://img.shields.io/github/last-commit/PUSHPAK-JAISWAL/webview)](https://github.com/PUSHPAK-JAISWAL/webview)
+
+This repository provides a V binding for [webview](https://github.com/webview/webview), a cross-platform library
+for building desktop applications with native web views.
+
+Maintained by [Pushpak Jaiswal](https://github.com/PUSHPAK-JAISWAL) ([pushpakmjaiswal@gmail.com](mailto:pushpakmjaiswal@gmail.com)).
+This is a community-maintained continuation of [ttytm/webview](https://github.com/ttytm/webview). The original project
+and its contributors remain credited; this repository carries forward the V compatibility, packaging, and platform-build
+updates described here.
+
+The upstream C++ implementation is pinned in [`UPSTREAM_WEBVIEW_VERSION`](UPSTREAM_WEBVIEW_VERSION). A scheduled GitHub
+Actions workflow checks upstream tags and opens a pull request with updated source for review.
+
+[Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md) · [License](LICENSE)
 
 ## Installation
 
 **Build Tools and WebKit**
 
-- Linux - Example for debian based destributions
+- Linux - Debian/Ubuntu example
 
   ```sh
-  # Build tools, such as a C compiler
-  sudo apt install build-essential
-  # WebKit
-  sudo apt install libgtk-3-dev libwebkit2gtk-4.0-dev
+  sudo apt install build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+  # For distributions that package WebKitGTK 4.0 instead:
+  sudo apt install build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.0-dev
   ```
 
 - macOS
@@ -28,7 +38,8 @@ purpose programming language with modern web technologies to design a graphical 
 
 - Windows
 
-  E.g., https://www.msys2.org/ provides instructions to install MinGW
+  Install MinGW-w64 (for example through [MSYS2](https://www.msys2.org/)) and ensure the matching `gcc` and `g++`
+  toolchain is on `PATH`. The WebView2 SDK headers are included with the package; Windows includes the WebView2 Runtime.
 
 **V**
 
@@ -39,31 +50,27 @@ purpose programming language with modern web technologies to design a graphical 
 - Install the module
 
   ```sh
-  v install ttytm.webview
+  v install pushpak_jaiswal.webview
   ```
 
-- After the installation, build the webview C library to which the webview V module will bind.\
-
-  ```sh
-  # Linux/macOS
-  v ~/.vmodules/ttytm/webview/build.vsh
-  # PowerShell
-  v $HOME/.vmodules/ttytm/webview/build.vsh
-  ```
+- Import `pushpak_jaiswal.webview` in your V application and build it normally. V compiles the package's native
+  implementation automatically as part of the application build; no separate library-build command is required.
+- Linux still requires GTK 3 and WebKitGTK development packages. macOS uses the system WebKit framework. Windows requires
+  MinGW-w64 and the WebView2 Runtime.
 
 ## Usage Example
 
 > [!TIP]
-> When running and building on Windows, it is recommended to use `gcc` for compilation. E.g.:
+> When building on Windows, select the C and C++ compilers from the same MinGW-w64 installation. For MSYS2 UCRT64:
 >
 > ```sh
-> v -cc gcc run .
+> v -cc gcc -c++ g++ run .
 > ```
 
 <br>
 
 ```v ignore
-import ttytm.webview
+import pushpak_jaiswal.webview
 
 const html = '<!DOCTYPE html>
 <html lang="en">
@@ -116,12 +123,12 @@ CONSOLE LOG Hello from JS! Hello back from V!
 
 ### Additional Examples
 
-Examples that can be found in the [`examples/`](https://github.com/ttytm/webview/tree/master/examples) directory of the repository.
+Examples live in the [`examples/`](https://github.com/PUSHPAK-JAISWAL/webview/tree/main/examples) directory.
 
-1. [v-js-interop-simple](https://github.com/ttytm/webview/tree/main/examples/v-js-interop-simple) - simple example with a similar complexity as the readme example above.
-2. [v-js-interop-app](https://github.com/ttytm/webview/tree/main/examples/v-js-interop-app) - shows the basic code architecture of an application.
-3. [project-structure](https://github.com/ttytm/webview/tree/main/examples/project-structure) - organizes `2. v-js-interop-app` into a directory structure that can be used as orientation for more complex projects.
-4. [astro-project](https://github.com/ttytm/webview/tree/main/examples/astro-project) - uses a modern web framework for the UI.
+1. [v-js-interop-simple](https://github.com/PUSHPAK-JAISWAL/webview/tree/main/examples/v-js-interop-simple) - simple example with a similar complexity as the readme example above.
+2. [v-js-interop-app](https://github.com/PUSHPAK-JAISWAL/webview/tree/main/examples/v-js-interop-app) - shows the basic code architecture of an application.
+3. [project-structure](https://github.com/PUSHPAK-JAISWAL/webview/tree/main/examples/project-structure) - organizes `2. v-js-interop-app` into a directory structure that can be used as orientation for more complex projects.
+4. [astro-project](https://github.com/PUSHPAK-JAISWAL/webview/tree/main/examples/astro-project) - uses a modern web framework for the UI.
 
 External Examples
 
@@ -130,8 +137,8 @@ External Examples
 
 ## Documentation
 
-An overview of exported functions is accessible in the repositories [`src/lib.v`](https://github.com/ttytm/webview/blob/master/src/lib.v)
-file and on its [vdoc site](https://ttytm.github.io/webview/webview.html).
+An overview of exported functions is accessible in [`lib.v`](https://github.com/PUSHPAK-JAISWAL/webview/blob/main/lib.v)
+and on the [documentation site](https://pushpak-jaiswal.github.io/webview/webview.html).
 
 ### Debugging
 
@@ -165,4 +172,4 @@ or breaking changes may occur in minor(`0.<minor>.*`) versions.
 
 ## License
 
-Open source software under the MIT license.
+Open source software under the [MIT license](LICENSE).

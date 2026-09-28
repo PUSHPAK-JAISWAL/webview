@@ -1,27 +1,15 @@
-# Binaries by extension
+# Native build outputs
 *.exe
 *.exe~
 *.a
 *.so
+*.so.*
 *.o
 *.obj
 *.dll
-*.so
-*.so.*
 *.dylib
-
-# Binaries in project root
-build
-
-# All sub-level build binaries
-*/**/*
-!*/**/*/
-!*/**/*.*
-
-# Webview library files
-webview.cc
-webview.h
-webview.o
+build/
+.build/
 
 # Common editor/system specific metadata
 .DS_Store
@@ -29,9 +17,7 @@ webview.o
 .vscode/
 *.iml
 
-# Private files
+# Private files and generated docs
 .env
 *.db
-
-# Generated docs
 _docs/

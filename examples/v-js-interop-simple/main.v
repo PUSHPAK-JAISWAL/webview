@@ -1,4 +1,4 @@
-import ttytm.webview
+import pushpak_jaiswal.webview
 
 const doc = '<!DOCTYPE html>
 <html lang="en">

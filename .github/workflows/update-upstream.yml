@@ -1,0 +1,68 @@
+name: Update upstream webview
+
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check latest upstream tag
+        id: upstream
+        shell: bash
+        run: |
+          latest_tag="$(git ls-remote --tags --refs https://github.com/webview/webview.git | awk -F/ '{print $NF}' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1)"
+          current_tag="$(tr -d '\r\n' < UPSTREAM_WEBVIEW_VERSION)"
+          if [ -z "$latest_tag" ]; then
+            echo "Could not find an upstream version tag" >&2
+            exit 1
+          fi
+          echo "tag=$latest_tag" >> "$GITHUB_OUTPUT"
+          if [ "$latest_tag" = "$current_tag" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update vendored source
+        if: steps.upstream.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git clone --depth 1 --branch "${{ steps.upstream.outputs.tag }}" https://github.com/webview/webview.git "$RUNNER_TEMP/webview-upstream"
+          cp "$RUNNER_TEMP/webview-upstream/core/include/webview.h" webview.h
+          rm -rf webview
+          cp -R "$RUNNER_TEMP/webview-upstream/core/include/webview" webview
+          cp "$RUNNER_TEMP/webview-upstream/core/src/webview.cc" webview.cpp
+          printf '%s\n' "${{ steps.upstream.outputs.tag }}" > UPSTREAM_WEBVIEW_VERSION
+
+      - name: Build updated upstream source
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.1-dev
+          curl -Lo v_linux.zip https://github.com/vlang/v/releases/latest/download/v_linux.zip
+          unzip -q v_linux.zip
+          ./v/v symlink
+          v run build.vsh --silent
+
+      - name: Open update pull request
+        if: steps.upstream.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/update-webview-${{ steps.upstream.outputs.tag }}
+          delete-branch: true
+          title: 'chore: update upstream webview to ${{ steps.upstream.outputs.tag }}'
+          commit-message: 'chore: update upstream webview to ${{ steps.upstream.outputs.tag }}'
+          body: |
+            Updates the vendored C++ implementation from [webview/webview](https://github.com/webview/webview) tag `${{ steps.upstream.outputs.tag }}`.
+
+            The Linux native build passed in the updater workflow. Review platform compatibility and API changes before merging.
+          labels: dependencies

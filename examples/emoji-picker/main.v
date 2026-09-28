@@ -1,17 +1,19 @@
-import ttytm.webview
+import pushpak_jaiswal.webview
 import os
 
 const sound_file_path = '${@VMODROOT}/assets/pop.wav'
 
-fn play_sound(_ &webview.Event) {
+fn play_sound(_ &webview.Event) voidptr {
 	$if linux {
 		spawn os.execute('aplay ${sound_file_path}')
 	} $else $if macos {
 		spawn os.execute('afplay ${sound_file_path}')
 	}
+	return webview.no_result
 }
 
 w := webview.create()
+
 w.set_title('Emoji Picker')
 w.set_size(352, 435, .@none)
 w.bind[voidptr]('play_sound', play_sound)

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:pushpakmjaiswal@gmail.com
+    about: Report security issues privately by email. Do not open a public issue.
+  - name: Upstream webview C++ project
+    url: https://github.com/webview/webview/issues
+    about: Report issues that reproduce in the upstream C++ library.

@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible problem with the V binding or its platform build.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Check existing issues first and remove secrets or personal data from logs.
+  - type: input
+    id: version
+    attributes:
+      label: Package and upstream versions
+      description: Include the V package version and UPSTREAM_WEBVIEW_VERSION.
+      placeholder: 0.1.0 / 0.12.0
+    validations:
+      required: true
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include a minimal example and the exact command that fails.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      render: text
+    validations:
+      required: false

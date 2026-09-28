@@ -52,9 +52,9 @@ cd examples/astro-project
 <details>
 <summary><b>yarn</b></summary>
 
-- Update `src/main.v`
+- Update `main.v`
 
-  https://github.com/ttytm/webview/blob/14e87cdc771943fb8b6381bfd737f6a26250cbd7/examples/astro-project/src/main.v#L23-L25
+  https://github.com/ttytm/webview/blob/14e87cdc771943fb8b6381bfd737f6a26250cbd7/examples/astro-project/main.v#L23-L25
 
   ```v
   // w.serve_dev(ui_path)!
@@ -88,9 +88,9 @@ cd examples/astro-project
 <details>
 <summary><b>Pnpm</b></summary>
 
-- Update `src/main.v`
+- Update `main.v`
 
-  https://github.com/ttytm/webview/blob/14e87cdc771943fb8b6381bfd737f6a26250cbd7/examples/astro-project/src/main.v#L23-L25
+  https://github.com/ttytm/webview/blob/14e87cdc771943fb8b6381bfd737f6a26250cbd7/examples/astro-project/main.v#L23-L25
 
   ```v
   // w.serve_dev(ui_path)!

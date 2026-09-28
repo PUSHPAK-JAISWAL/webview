@@ -2,12 +2,10 @@
 
 import cli
 import os
-import time
 import net.http
 import regex
 
-const lib_url = 'https://raw.githubusercontent.com/webview/webview/refs/tags/0.10.0'
-const lib_dir = '${@VMODROOT}/src'
+const lib_dir = '${@VMODROOT}'
 const cxx = if _ := find_abs_path_of_executable('g++') {
 	'g++'
 } else if _ := find_abs_path_of_executable('clang++') {
@@ -22,8 +20,7 @@ const cxx = if _ := find_abs_path_of_executable('g++') {
 fn rm_readme_section(html string) string {
 	mut r := regex.regex_opt(r'<section id="readme_webview".*</section>') or { panic(err) }
 	sec_start, sec_end := r.find(html)
-	return '${html[..sec_start]}</section>${html[sec_end..]}'
-		.replace('<li class="open"><a href="#readme_webview">README</a></li>', '')
+	return '${html[..sec_start]}</section>${html[sec_end..]}'.replace('<li class="open"><a href="#readme_webview">README</a></li>', '')
 }
 
 fn build_docs() ! {
@@ -33,7 +30,6 @@ fn build_docs() ! {
 	mut p := new_process(@VEXE)
 	p.set_args(['doc', '-readme', '-m', '-f', 'html', '.'])
 	p.wait()
-	// Prepare html.
 	mut webview_html := read_file('_docs/webview.html')!
 	webview_html = rm_readme_section(webview_html)
 	write_file('_docs/webview.html', webview_html)!
@@ -41,111 +37,77 @@ fn build_docs() ! {
 
 // == Download & Build Library ================================================
 
-fn spinner(ch chan bool, silent bool) {
-	if silent {
-		return
-	}
-	runes := [`-`, `\\`, `|`, `/`]
-	mut pos := 0
-	for {
-		if ch.closed {
-			print('\r')
-			return
+fn download_source() ! {
+	if !os.exists('${lib_dir}/webview.cpp') {
+		upstream_version := os.read_file('${lib_dir}/UPSTREAM_WEBVIEW_VERSION') or {
+			return error('UPSTREAM_WEBVIEW_VERSION is missing; restore it from the package repository.')
 		}
-		if pos == runes.len - 1 {
-			pos = 0
-		} else {
-			pos += 1
-		}
-		print('\r${runes[pos]}')
-		flush()
-		time.sleep(100 * time.millisecond)
+		upstream_url := 'https://raw.githubusercontent.com/webview/webview/refs/tags/${upstream_version.trim_space()}'
+		println('Downloading webview ${upstream_version.trim_space()} source...')
+		http.download_file('${upstream_url}/core/src/webview.cc', '${lib_dir}/webview.cpp')!
 	}
 }
 
-@[if windows]
-fn download_webview2() {
-	http.download_file('https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2',
-		'${lib_dir}/webview2.zip') or { panic(err) }
-	unzip_res := execute('powershell -command Expand-Archive -LiteralPath ${lib_dir}/webview2.zip -DestinationPath ${lib_dir}/webview2')
-	if unzip_res.exit_code != 0 {
-		eprintln(unzip_res.output)
-		exit(1)
-	}
-}
-
-fn download(silent bool) {
-	println('Downloading...')
-	spinner_ch := chan bool{}
-	spawn spinner(spinner_ch, silent)
-	defer { spinner_ch.close() }
-	http.download_file('${lib_url}/webview.h', '${lib_dir}/webview.h') or { panic(err) }
-	http.download_file('${lib_url}/webview.cc', '${lib_dir}/webview.cc') or { panic(err) }
-	download_webview2()
-}
-
-fn build(silent bool) {
-	mut cmd := '${cxx} -c ${lib_dir}/webview.cc -DWEBVIEW_STATIC -o ${lib_dir}/webview.o'
-	cmd += $if darwin { ' -std=c++11' } $else { ' -std=c++17' }
+fn build() ! {
+	mut cmd := '${cxx} -std=c++17 -c "${lib_dir}/webview.cpp" -DWEBVIEW_STATIC -I"${lib_dir}" -o "${lib_dir}/webview.o"'
 	$if linux {
-		cmd += ' $(pkg-config --cflags gtk+-3.0 webkit2gtk-4.0)'
-	} $else $if windows {
-		defer {
-			// Cleanup
-			rm('${lib_dir}/webview2.zip') or {}
-			rmdir_all('${lib_dir}/webview2') or {}
+		webkit_pkg := if execute('pkg-config --exists gtk+-3.0 webkit2gtk-4.1').exit_code == 0 {
+			'webkit2gtk-4.1'
+		} else {
+			'webkit2gtk-4.0'
 		}
-		cmd += ' -I${lib_dir}/webview2/build/native/include'
+		pkg_config := execute('pkg-config --cflags gtk+-3.0 ${webkit_pkg}')
+		if pkg_config.exit_code != 0 {
+			return error('GTK and WebKitGTK development packages are required (gtk+-3.0 and webkit2gtk-4.1 or webkit2gtk-4.0).')
+		}
+		cmd += ' -DWEBVIEW_GTK ${pkg_config.output}'
+	} $else $if windows {
+		cmd += ' -DWEBVIEW_EDGE -I"${lib_dir}/webview2/include"'
+	} $else $if darwin {
+		cmd += ' -DWEBVIEW_COCOA'
 	}
 	println('Building...')
-	spinner_ch := chan bool{}
-	spawn spinner(spinner_ch, silent)
-	defer { spinner_ch.close() }
 	build_res := execute(cmd)
 	if build_res.exit_code != 0 {
-		eprintln(build_res.output)
-		exit(1)
+		return error('failed to build the webview library: ${build_res.output}')
 	}
-	println('\rSuccessfully built the webview library.')
+	println('Successfully built the webview library for this platform.')
 }
 
-fn run(cmd cli.Command) ! {
-	// Remove old library files
-	execute('rm ${lib_dir}/webview.*')
-	silent := cmd.flags.get_bool('silent')!
-	download(silent)
-	time.sleep(100 * time.millisecond)
-	build(silent)
+fn run(_ cli.Command) ! {
+	download_source()!
+	build()!
 }
 
 // == Commands ================================================================
 
 mut cmd := cli.Command{
-	name:          'build.vsh'
-	posix_mode:    true
+	name: 'build.vsh'
+	posix_mode: true
 	required_args: 0
-	pre_execute:   fn (cmd cli.Command) ! {
+	pre_execute: fn (cmd cli.Command) ! {
 		if cmd.args.len > cmd.required_args {
 			eprintln('Unknown commands ${cmd.args}.\n')
 			cmd.execute_help()
 			exit(0)
 		}
 	}
-	execute:       run
-	commands:      [
+	execute: run
+	commands: [
 		cli.Command{
-			name:        'docs'
+			name: 'docs'
 			description: 'Build docs used for GitHub pages.'
-			execute:     fn (_ cli.Command) ! {
+			execute: fn (_ cli.Command) ! {
 				build_docs() or { eprintln('Failed building docs. ${err}') }
 			}
 		},
 	]
-	flags:         [
+	flags: [
 		cli.Flag{
 			flag: .bool
 			name: 'silent'
 		},
 	]
 }
+
 cmd.parse(os.args)

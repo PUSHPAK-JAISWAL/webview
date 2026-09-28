@@ -1,8 +1,8 @@
-import ttytm.webview { Event }
+import pushpak_jaiswal.webview { Event }
 import rand
 import net.http
 import time
-import json
+import json2
 
 struct App {
 mut:
@@ -55,7 +55,7 @@ fn fetch_news(_ &Event) Article {
 	// simulating a longer taking fetch or expensive computing.
 	time.sleep(time.second * 2)
 
-	news := json.decode([]Article, resp.body) or {
+	news := json2.decode[[]Article](resp.body) or {
 		eprintln('Failed decoding news.')
 		return result
 	}

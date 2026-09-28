@@ -17,8 +17,7 @@ jobs:
           mv v ~/v && ~/v/v symlink
       - name: Setup V module
         run: |
-          mkdir -p ~/.vmodules/ttytm && mv webview ~/.vmodules/ttytm/webview
-          ~/.vmodules/ttytm/webview/build.vsh --silent
+          mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview
       - name: Save cache
         uses: actions/cache/save@v4
         with:
@@ -43,9 +42,13 @@ jobs:
           fail-on-cache-miss: true
       - name: Setup V
         run: ~/v/v symlink && v -showcc self && v doctor
+      - name: L1 unit tests
+        run: v -stats test ~/.vmodules/pushpak_jaiswal/webview/tests/l1/
+      - name: L2 integration tests
+        run: v -stats test -run-only 'test_fn_call*,test_get_js_arg,test_return_value_to_js,test_return_value_from_threaded_task_to_js,test_static_server_serves_index_over_http' ~/.vmodules/pushpak_jaiswal/webview/tests/l2/
       - name: Build examples
         run: |
-          for example_dir in $(find ~/.vmodules/ttytm/webview/examples/* -maxdepth 0 -type d); do
+          for example_dir in $(find ~/.vmodules/pushpak_jaiswal/webview/examples/* -maxdepth 0 -type d); do
             cmd="v $example_dir/"
             [[ "$example_dir" =~ .*"emoji-picker"$ ]] && cmd+="main.v"
             echo "$cmd"

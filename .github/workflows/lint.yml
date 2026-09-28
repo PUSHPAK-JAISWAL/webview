@@ -16,7 +16,7 @@ jobs:
           key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Verify formatting
-        run: ~/v/v fmt -verify ~/.vmodules/ttytm/webview && exit 0 || ~/v/v fmt -diff . && exit 1
+        run: ~/v/v fmt -verify ~/.vmodules/pushpak_jaiswal/webview && exit 0 || ~/v/v fmt -diff . && exit 1
 
   vet:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
           key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Vet
-        run: ~/v/v vet -W ~/.vmodules/ttytm/webview
+        run: ~/v/v vet -W ~/.vmodules/pushpak_jaiswal/webview
 
   check-md:
     runs-on: ubuntu-latest
@@ -49,4 +49,4 @@ jobs:
           packages: libcurl4-openssl-dev
           version: 1.0
       - name: Check markdown
-        run: ~/v/v check-md -hide-warnings ~/.vmodules/ttytm/webview
+        run: ~/v/v check-md -hide-warnings ~/.vmodules/pushpak_jaiswal/webview
