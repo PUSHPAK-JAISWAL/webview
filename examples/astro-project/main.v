@@ -24,7 +24,6 @@ fn main() {
 		// w.serve_dev(ui_path, pkg_manager: .yarn)!
 		// w.serve_dev(ui_path, pkg_manager: .pnpm)!
 	} $else {
-
 		// After having run e.g., `npm run build` in `ui/`
 		w.serve_static(os.join_path(ui_path, 'dist'))!
 	}

@@ -9,7 +9,7 @@ fn test_event_gets_primitive_arguments() {
 	raw := '["hello",42,true]'
 	event := webview.Event{
 		event_id: &char(raw.str)
-		args: &char(raw.str)
+		args:     &char(raw.str)
 	}
 
 	assert event.get_arg[string](0)! == 'hello'
@@ -21,7 +21,7 @@ fn test_event_gets_complex_arguments_and_negative_indexes() {
 	raw := '["{\\"name\\":\\"Ada\\",\\"age\\":37}","[1,2,3]"]'
 	event := webview.Event{
 		event_id: &char(raw.str)
-		args: &char(raw.str)
+		args:     &char(raw.str)
 	}
 
 	assert event.get_arg[Person](0)! == Person{'Ada', 37}
@@ -32,7 +32,7 @@ fn test_event_rejects_out_of_range_indexes() {
 	raw := '[1,2,3]'
 	event := webview.Event{
 		event_id: &char(raw.str)
-		args: &char(raw.str)
+		args:     &char(raw.str)
 	}
 
 	if _ := event.get_arg[int](3) {
@@ -51,7 +51,7 @@ fn test_event_rejects_malformed_json() {
 	raw := '[1,]'
 	event := webview.Event{
 		event_id: &char(raw.str)
-		args: &char(raw.str)
+		args:     &char(raw.str)
 	}
 
 	if _ := event.get_arg[int](0) {

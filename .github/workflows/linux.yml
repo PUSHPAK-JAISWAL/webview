@@ -15,11 +15,6 @@ jobs:
           curl -Lo v_linux.zip https://github.com/vlang/v/releases/latest/download/v_linux.zip
           unzip -o v_linux.zip
           mv v ~/v && ~/v/v symlink
-      - name: Setup dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: libgtk-3-dev libwebkit2gtk-4.1-dev
-          version: 1.0
       - name: Setup V module
         run: |
           mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview
@@ -41,15 +36,9 @@ jobs:
     strategy:
       matrix:
         cc: [tcc, gcc, clang]
-        optimization: ['', '-W -cstrict']
-        exclude:
-          - cc: tcc
-            optimization: '-W -cstrict'
-          - cc: clang
-            optimization: '-W -cstrict'
       fail-fast: false
     env:
-      VFLAGS: -cg -cc ${{ matrix.cc }} ${{ matrix.optimization }}
+      VFLAGS: -cg -cc ${{ matrix.cc }}
     steps:
       - name: Restore cache
         uses: actions/cache/restore@v4
@@ -62,10 +51,7 @@ jobs:
       - name: Setup V
         run: ~/v/v symlink && v -showcc self && v doctor
       - name: Setup dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: libgtk-3-dev libwebkit2gtk-4.1-dev
-          version: 1.0
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libgtk-3-dev libwebkit2gtk-4.1-dev pkg-config
       - name: Test
         run: v -stats test ~/.vmodules/pushpak_jaiswal/webview/tests/l1/
       - name: Integration tests

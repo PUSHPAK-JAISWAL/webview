@@ -8,7 +8,7 @@ module icon
 
 $if linux {
 	#pkgconfig gtk+-3.0
-	$if $pkgconfig ( 'webkit2gtk-4.1' ) {
+	$if $pkgconfig('webkit2gtk-4.1') {
 		#pkgconfig webkit2gtk-4.1
 	} $else {
 		#pkgconfig webkit2gtk-4.0
@@ -39,7 +39,6 @@ pub fn set_icon(window voidptr, icon_file_path string) ! {
 		.window_not_found {
 			return error('Failed to set icon. Window not found.')
 		}
-
 		// .os_unsupported { return error('Failed to set icon. Unsupported OS.') }
 		.os_unsupported {
 			return
