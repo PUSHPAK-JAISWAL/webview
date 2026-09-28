@@ -3,7 +3,6 @@
 import cli
 import os
 import net.http
-import regex
 
 const lib_dir = '${@VMODROOT}'
 const cxx = if _ := find_abs_path_of_executable('g++') {
@@ -18,9 +17,18 @@ const cxx = if _ := find_abs_path_of_executable('g++') {
 
 // Remove redundant readme section from module page.
 fn rm_readme_section(html string) string {
-	mut r := regex.regex_opt(r'<section id="readme_webview".*</section>') or { panic(err) }
-	sec_start, sec_end := r.find(html)
-	return '${html[..sec_start]}</section>${html[sec_end..]}'.replace('<li class="open"><a href="#readme_webview">README</a></li>', '')
+	mut res := html
+	if start_idx := res.index('<section id="readme_') {
+		if end_idx := res.index_after('</section>', start_idx) {
+			res = res[..start_idx] + res[end_idx + '</section>'.len..]
+		}
+	}
+	if toc_start := res.index('<li class="open"><a href="#readme_') {
+		if toc_end := res.index_after('</li>', toc_start) {
+			res = res[..toc_start] + res[toc_end + '</li>'.len..]
+		}
+	}
+	return res
 }
 
 fn build_docs() ! {
@@ -30,9 +38,21 @@ fn build_docs() ! {
 	mut p := new_process(@VEXE)
 	p.set_args(['doc', '-readme', '-m', '-f', 'html', '.'])
 	p.wait()
-	mut webview_html := read_file('_docs/webview.html')!
+	mut webview_html_file := '_docs/webview.html'
+	if !os.exists(webview_html_file) {
+		for f in ls('_docs') or { []string{} } {
+			if f.ends_with('webview.html') && f != 'index.html' {
+				webview_html_file = '_docs/${f}'
+				break
+			}
+		}
+	}
+	mut webview_html := read_file(webview_html_file)!
 	webview_html = rm_readme_section(webview_html)
-	write_file('_docs/webview.html', webview_html)!
+	write_file(webview_html_file, webview_html)!
+	if webview_html_file != '_docs/webview.html' {
+		cp(webview_html_file, '_docs/webview.html')!
+	}
 }
 
 // == Download & Build Library ================================================
@@ -98,7 +118,10 @@ mut cmd := cli.Command{
 			name: 'docs'
 			description: 'Build docs used for GitHub pages.'
 			execute: fn (_ cli.Command) ! {
-				build_docs() or { eprintln('Failed building docs. ${err}') }
+				build_docs() or {
+					eprintln('Failed building docs. ${err}')
+					exit(1)
+				}
 			}
 		},
 	]

@@ -8,15 +8,18 @@
 This repository provides a V binding for [webview](https://github.com/webview/webview), a cross-platform library
 for building desktop applications with native web views.
 
-Maintained by [Pushpak Jaiswal](https://github.com/PUSHPAK-JAISWAL) ([pushpakmjaiswal@gmail.com](mailto:pushpakmjaiswal@gmail.com)).
-This is a community-maintained continuation of [ttytm/webview](https://github.com/ttytm/webview). The original project
-and its contributors remain credited; this repository carries forward the V compatibility, packaging, and platform-build
-updates described here.
+Maintained by [Pushpak Jaiswal](https://github.com/PUSHPAK-JAISWAL)
+([pushpakmjaiswal@gmail.com](mailto:pushpakmjaiswal@gmail.com)).
+This is a community-maintained continuation of [ttytm/webview](https://github.com/ttytm/webview).
+The original project and its contributors remain credited; this repository carries forward
+the V compatibility, packaging, and platform-build updates described here.
 
-The upstream C++ implementation is pinned in [`UPSTREAM_WEBVIEW_VERSION`](UPSTREAM_WEBVIEW_VERSION). A scheduled GitHub
-Actions workflow checks upstream tags and opens a pull request with updated source for review.
+The upstream C++ implementation is pinned in
+[`UPSTREAM_WEBVIEW_VERSION`](UPSTREAM_WEBVIEW_VERSION). A scheduled GitHub Actions workflow checks
+upstream tags and opens a pull request with updated source for review.
 
-[Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md) · [License](LICENSE)
+[Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) ·
+[Security](SECURITY.md) · [License](LICENSE)
 
 ## Installation
 
@@ -38,8 +41,9 @@ Actions workflow checks upstream tags and opens a pull request with updated sour
 
 - Windows
 
-  Install MinGW-w64 (for example through [MSYS2](https://www.msys2.org/)) and ensure the matching `gcc` and `g++`
-  toolchain is on `PATH`. The WebView2 SDK headers are included with the package; Windows includes the WebView2 Runtime.
+  Install MinGW-w64 (for example through [MSYS2](https://www.msys2.org/)) and ensure the matching
+  `gcc` and `g++` toolchain is on `PATH`. The WebView2 SDK headers are included with the package;
+  Windows includes the WebView2 Runtime.
 
 **V**
 
@@ -53,15 +57,18 @@ Actions workflow checks upstream tags and opens a pull request with updated sour
   v install pushpak_jaiswal.webview
   ```
 
-- Import `pushpak_jaiswal.webview` in your V application and build it normally. V compiles the package's native
-  implementation automatically as part of the application build; no separate library-build command is required.
-- Linux still requires GTK 3 and WebKitGTK development packages. macOS uses the system WebKit framework. Windows requires
-  MinGW-w64 and the WebView2 Runtime.
+- Import `pushpak_jaiswal.webview` in your V application and build it normally. V compiles
+  the package's native implementation automatically as part of the application build; no separate
+  library-build command is required.
+- Linux still requires GTK 3 and WebKitGTK development packages. macOS uses the system WebKit
+  framework. Windows requires MinGW-w64 and the WebView2 Runtime.
 
 ## Usage Example
 
 > [!TIP]
-> When building on Windows, select the C and C++ compilers from the same MinGW-w64 installation. For MSYS2 UCRT64:
+
+> When building on Windows, select the C and C++ compilers from the same MinGW-w64 installation.
+> For MSYS2 UCRT64:
 >
 > ```sh
 > v -cc gcc -c++ g++ run .

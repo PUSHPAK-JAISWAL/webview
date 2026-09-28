@@ -1,5 +1,3 @@
-module webview
-
 import pushpak_jaiswal.webview
 
 struct Person {

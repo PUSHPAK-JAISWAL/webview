@@ -1,5 +1,3 @@
-module serve
-
 import os
 import pushpak_jaiswal.webview.serve
 

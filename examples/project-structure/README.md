@@ -6,15 +6,14 @@ into a project structure that can be used as a starting guide for more complex W
 ```
 ├── assets/
 │   └── icon.ico
-├──
-│   ├── api.v
-│   ├── main.v
-│   └── news.v
 ├── ui/
 │   ├── index.html
 │   ├── main.js
 │   └── style.css
-│── README.md
+├── api.v
+├── main.v
+├── news.v
+├── README.md
 └── v.mod
 ```
 
