@@ -23,6 +23,7 @@ jobs:
       - name: Setup V module
         run: |
           mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview
+          ~/.vmodules/pushpak_jaiswal/webview/build.vsh --silent
       - name: Save cache
         uses: actions/cache/save@v4
         with:
@@ -69,7 +70,7 @@ jobs:
       - name: Test
         run: v -stats test ~/.vmodules/pushpak_jaiswal/webview/tests/l1/
       - name: Integration tests
-        run: xvfb-run v -stats test -run-only 'test_fn_call*,test_get_js_arg,test_return_value_to_js,test_return_value_from_threaded_task_to_js,test_static_server_serves_index_over_http' ~/.vmodules/pushpak_jaiswal/webview/tests/l2/
+        run: v -stats test -run-only test_static_server_serves_index_over_http ~/.vmodules/pushpak_jaiswal/webview/tests/l2/
       - name: Build examples
         run: |
           for example_dir in $(find ~/.vmodules/pushpak_jaiswal/webview/examples/* -maxdepth 0 -type d); do

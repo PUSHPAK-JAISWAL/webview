@@ -16,7 +16,11 @@ jobs:
           key: ${{ runner.os }}-${{ github.sha }}
           fail-on-cache-miss: true
       - name: Verify formatting
-        run: ~/v/v fmt -verify ~/.vmodules/pushpak_jaiswal/webview && exit 0 || ~/v/v fmt -diff . && exit 1
+        run: |
+          ~/v/v fmt -verify ~/.vmodules/pushpak_jaiswal/webview || {
+            ~/v/v fmt -diff ~/.vmodules/pushpak_jaiswal/webview
+            exit 1
+          }
 
   vet:
     runs-on: ubuntu-latest

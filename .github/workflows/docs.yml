@@ -30,8 +30,6 @@ jobs:
       - name: Setup pages
         if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload artifact
         if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
         uses: actions/upload-pages-artifact@v3
