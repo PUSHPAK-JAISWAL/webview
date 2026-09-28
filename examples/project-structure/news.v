@@ -1,5 +1,5 @@
 import time
-import json2
+import json
 import rand
 import net.http
 
@@ -19,7 +19,7 @@ fn fetch_news_() Article {
 	// simulating a longer taking fetch or expensive computing.
 	time.sleep(time.second * 2)
 
-	news := json2.decode[[]Article](resp.body) or {
+	news := json.decode([]Article, resp.body) or {
 		eprintln('Failed decoding news.')
 		return result
 	}

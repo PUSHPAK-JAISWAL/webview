@@ -18,7 +18,6 @@ jobs:
       - name: Setup V module
         run: |
           mkdir -p ~/.vmodules/pushpak_jaiswal && mv webview ~/.vmodules/pushpak_jaiswal/webview
-          ~/.vmodules/pushpak_jaiswal/webview/build.vsh --silent
       - name: Save cache
         uses: actions/cache/save@v4
         with:

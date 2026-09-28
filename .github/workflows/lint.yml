@@ -17,8 +17,8 @@ jobs:
           fail-on-cache-miss: true
       - name: Verify formatting
         run: |
-          ~/v/v fmt -verify ~/.vmodules/pushpak_jaiswal/webview || {
-            ~/v/v fmt -diff ~/.vmodules/pushpak_jaiswal/webview
+          ~/v/v fmt -no-migrate-json2 -verify ~/.vmodules/pushpak_jaiswal/webview || {
+            ~/v/v fmt -no-migrate-json2 -diff ~/.vmodules/pushpak_jaiswal/webview
             exit 1
           }
 
