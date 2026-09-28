@@ -29,7 +29,7 @@ jobs:
         run: ./build.vsh docs
       - name: Setup pages
         if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload artifact
         if: github.event_name == 'push' && github.ref_name == 'main' && github.repository == 'PUSHPAK-JAISWAL/webview'
         uses: actions/upload-pages-artifact@v3
