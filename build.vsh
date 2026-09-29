@@ -69,7 +69,7 @@ fn download_source() ! {
 }
 
 fn build() ! {
-	mut cmd := '${cxx} -std=c++17 -c "${lib_dir}/webview.cpp" -DWEBVIEW_STATIC -I"${lib_dir}" -o "${lib_dir}/webview.o"'
+	mut cmd := '${cxx} -std=c++17 -O2 -DNDEBUG -c "${lib_dir}/webview.cpp" -DWEBVIEW_STATIC -I"${lib_dir}" -o "${lib_dir}/webview.o"'
 	$if linux {
 		webkit_pkg := if execute('pkg-config --exists gtk+-3.0 webkit2gtk-4.1').exit_code == 0 {
 			'webkit2gtk-4.1'

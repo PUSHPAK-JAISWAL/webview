@@ -16,7 +16,7 @@ module webview
 
 #flag darwin -framework WebKit -lc++
 
-#flag windows -ladvapi32 -lole32 -lshell32 -lshlwapi -luser32 -lversion -lstdc++
+#flag windows -ladvapi32 -lole32 -lshell32 -lshlwapi -luser32 -lversion -static -lstdc++
 
 #include "@VMODROOT/webview.h"
 
